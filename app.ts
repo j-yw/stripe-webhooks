@@ -9,7 +9,7 @@ app.use(express.json());
 
 app.post("/stripe-webhook", async (req: Request, res: Response) => {
 	try {
-		const eventType = req.headers["stripe-signature"];
+		const eventType = req.body.type;
 		console.log(`🍀 \n | 🍄 app.post \n | 🍄 req:`, req);
 		console.log(`🍀 \n | 🍄 app.post \n | 🍄 eventType:`, eventType);
 
