@@ -23,13 +23,16 @@ app.post("/stripe-webhook", async (req: Request, res: Response) => {
 			return res.sendStatus(400);
 		}
 
+		const formData = new FormData();
+		formData.append("email", customer_email);
+		formData.append("role", "PREMIUM");
+
 		await axios.post(
 			"https://60c6-38-6-227-3.ngrok-free.app/api/updateUserRole",
-			{
-				email: customer_email,
-				role: "PREMIUM",
-			}
+			formData
 		);
+
+		res.sendStatus(200);
 
 		res.sendStatus(200);
 	} catch (error) {
