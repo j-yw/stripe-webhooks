@@ -1,14 +1,42 @@
-// app.ts
-import express, { Request, Response } from 'express';
+// server.ts
+import express, { Request, Response } from "express";
+import axios from "axios";
 
 const app = express();
-const port = 3000; // Choose the port you want to run your server on
+const port = 3000;
 
-app.get('/', (req: Request, res: Response) => {
-  res.send('Hello, Express with TypeScript!');
+app.use(express.json());
+
+app.post("/stripe-webhook", async (req: Request, res: Response) => {
+	try {
+		const eventType = req.headers["stripe-signature"];
+
+		if (eventType !== "checkout.session.completed") {
+			console.log(`Received unsupported event type: ${eventType}`);
+			return res.sendStatus(400);
+		}
+
+		const {
+			data: {
+				object: { customer_email },
+			},
+		} = req.body;
+
+		await axios.post(
+			"https://60c6-38-6-227-3.ngrok-free.app/api/updateUserRole",
+			{
+				email: customer_email,
+				role: "PREMIUM",
+			}
+		);
+
+		res.sendStatus(200);
+	} catch (error) {
+		console.error("Error handling webhook event:", error);
+		res.sendStatus(500);
+	}
 });
 
 app.listen(port, () => {
-  console.log(`Server is listening on port ${port}`);
+	console.log(`Server is listening on port ${port}`);
 });
-
