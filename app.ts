@@ -30,7 +30,12 @@ app.post("/stripe-webhook", async (req: Request, res: Response) => {
 		await axios
 			.post(
 				"https://60c6-38-6-227-3.ngrok-free.app/api/updateUserRole",
-				formData
+				formData,
+				{
+					headers: {
+						"x-api-key": "123",
+					},
+				}
 			)
 			.then((result) => {
 				console.log(result);
