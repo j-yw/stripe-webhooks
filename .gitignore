@@ -4,9 +4,6 @@ node_modules/
 # Ignore build output
 dist/
 
-# Ignore pnpm lockfile
-pnpm-lock.yaml
-
 # Ignore environment variables file (if applicable)
 .env
 
