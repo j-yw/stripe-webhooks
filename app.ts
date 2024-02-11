@@ -33,7 +33,8 @@ app.post("/stripe-webhook", async (req: Request, res: Response) => {
 				formData
 			)
 			.then((result) => {
-				res.status(200).json(result);
+				console.log(result);
+				res.status(200);
 			})
 			.catch((err) => {
 				console.error(err);
