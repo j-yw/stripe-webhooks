@@ -27,14 +27,18 @@ app.post("/stripe-webhook", async (req: Request, res: Response) => {
 		formData.append("email", customer_email);
 		formData.append("role", "PREMIUM");
 
-		await axios.post(
-			"https://60c6-38-6-227-3.ngrok-free.app/api/updateUserRole",
-			formData
-		);
-
-		res.sendStatus(200);
-
-		res.sendStatus(200);
+		await axios
+			.post(
+				"https://60c6-38-6-227-3.ngrok-free.app/api/updateUserRole",
+				formData
+			)
+			.then((result) => {
+				res.status(200).json(result);
+			})
+			.catch((err) => {
+				console.error(err);
+				res.status(500).json({ message: "Internal Server Error" });
+			});
 	} catch (error) {
 		console.error("Error handling webhook event:", error);
 		res.sendStatus(500);
