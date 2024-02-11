@@ -1,9 +1,11 @@
 // server.ts
 import express, { Request, Response } from "express";
 import axios from "axios";
+import dotenv from "dotenv";
 
 const app = express();
 const port = process.env.PORT || 3000;
+dotenv.config();
 
 app.use(express.json());
 
@@ -33,7 +35,7 @@ app.post("/stripe-webhook", async (req: Request, res: Response) => {
 				formData,
 				{
 					headers: {
-						"x-api-key": "123",
+						"x-api-key": process.env.X_API_KEY,
 					},
 				}
 			)
