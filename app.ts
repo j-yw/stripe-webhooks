@@ -10,6 +10,8 @@ app.use(express.json());
 app.post("/stripe-webhook", async (req: Request, res: Response) => {
 	try {
 		const eventType = req.headers["stripe-signature"];
+		console.log(`🍀 \n | 🍄 app.post \n | 🍄 req:`, req);
+		console.log(`🍀 \n | 🍄 app.post \n | 🍄 eventType:`, eventType);
 
 		if (eventType !== "checkout.session.completed") {
 			console.log(`Received unsupported event type: ${eventType}`);
