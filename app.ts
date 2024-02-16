@@ -18,11 +18,16 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!!);
 async function getCustomerEmail(customerId: any) {
 	try {
 		const customer = await stripe.customers.retrieve(customerId);
-		console.log(
-			`🍀 \n | 🍄 getCustomerEmail \n | 🍄 customer:`,
-			customer.email
-		);
-		return customer.email;
+		if ("deleted" in customer && customer.deleted === true) {
+			console.error("Customer has been deleted");
+			return null;
+		} else {
+			console.log(
+				`🍀 \n | 🍄 getCustomerEmail \n | 🍄 customer:`,
+				customer.email
+			);
+			return customer.email;
+		}
 	} catch (error) {
 		console.error("Error retrieving customer:", error);
 	}
