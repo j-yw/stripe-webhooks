@@ -11,6 +11,10 @@ app.use(express.json());
 
 app.post("/stripe-webhook", async (req: Request, res: Response) => {
 	console.log(`🍀 \n | 🍄 app.post \n | 🍄 req:`, req.body);
+	console.log(
+		`🍀 \n | 🍄 app.post \n | 🍄 req:`,
+		req.body.data.object.customer
+	);
 	try {
 		console.log(`Received event:`, req.body.type);
 		if (req.body.type === "checkout.session.completed") {
@@ -43,6 +47,7 @@ app.post("/stripe-webhook", async (req: Request, res: Response) => {
 			const formData = new FormData();
 			console.log(`🍀 \n | 🍄 app.post \n | 🍄 formData:`, formData);
 			formData.append("email", req.body.data.object.customer_email);
+			formData.append("customerId", req.body.data.object.customer);
 			formData.append("role", "PREMIUM");
 			await axios
 				.post(
@@ -69,6 +74,7 @@ app.post("/stripe-webhook", async (req: Request, res: Response) => {
 			const formData = new FormData();
 			console.log(`🍀 \n | 🍄 app.post \n | 🍄 formData:`, formData);
 			formData.append("email", req.body.data.object.customer_email);
+			formData.append("customerId", req.body.data.object.customer);
 			formData.append("role", "USER");
 			await axios
 				.post(
