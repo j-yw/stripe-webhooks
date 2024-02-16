@@ -17,6 +17,9 @@ dependencies:
   express:
     specifier: ^4.18.2
     version: 4.18.2
+  stripe:
+    specifier: ^14.17.0
+    version: 14.17.0
   ts-node-dev:
     specifier: ^2.0.0
     version: 2.0.0(@types/node@20.11.17)(typescript@5.3.3)
@@ -869,6 +872,14 @@ packages:
   /strip-json-comments@2.0.1:
     resolution: {integrity: sha512-4gB8na07fecVVkOI6Rs4e7T6NOTki5EmL7TUduTs6bu3EdnSycntVJ4re8kgZA+wx9IueI2Y11bfbgwtzuE0KQ==}
     engines: {node: '>=0.10.0'}
+    dev: false
+
+  /stripe@14.17.0:
+    resolution: {integrity: sha512-iwV5SKoXuRIQFne4twGwiiczOkVW73eE2CKn6ltUKCacDy4SGHBX6kj1/xCV2bzzzQjcVtsh5F1aAbJTmf3tLw==}
+    engines: {node: '>=12.*'}
+    dependencies:
+      '@types/node': 20.11.17
+      qs: 6.11.0
     dev: false
 
   /supports-preserve-symlinks-flag@1.0.0:

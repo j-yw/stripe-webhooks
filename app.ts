@@ -2,24 +2,44 @@
 import express, { Request, Response } from "express";
 import axios from "axios";
 import dotenv from "dotenv";
+import Stripe from "stripe";
 
 const app = express();
 const port = process.env.PORT || 3000;
+
+if (!process.env.STRIPE_SECRET_KEY) {
+	console.warn(
+		"WARNING: STRIPE_SECRET_KEY environment variable is required for Stripe integration."
+	);
+}
+
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!!);
+
+async function getCustomerEmail(customerId: any) {
+	try {
+		const customer = await stripe.customers.retrieve(customerId);
+		console.log(
+			`🍀 \n | 🍄 getCustomerEmail \n | 🍄 customer:`,
+			customer.email
+		);
+		return customer.email;
+	} catch (error) {
+		console.error("Error retrieving customer:", error);
+	}
+}
+
 dotenv.config();
 
 app.use(express.json());
 
 app.post("/stripe-webhook", async (req: Request, res: Response) => {
-	console.log(`🍀 \n | 🍄 app.post \n | 🍄 req:`, req.body);
-	console.log(
-		`🍀 \n | 🍄 app.post \n | 🍄 req:`,
-		req.body.data.object.customer
-	);
+	let email = req.body.data.object.customer_email;
+	const customerId = req.body.data.object.customer;
+
 	try {
 		console.log(`Received event:`, req.body.type);
 		if (req.body.type === "checkout.session.completed") {
 			const formData = new FormData();
-			console.log(`🍀 \n | 🍄 app.post \n | 🍄 formData:`, formData);
 			formData.append("email", req.body.data.object.customer_email);
 			formData.append("role", "PREMIUM");
 			await axios
@@ -45,7 +65,6 @@ app.post("/stripe-webhook", async (req: Request, res: Response) => {
 			req.body.type === "customer.subscription.resumed"
 		) {
 			const formData = new FormData();
-			console.log(`🍀 \n | 🍄 app.post \n | 🍄 formData:`, formData);
 			formData.append("email", req.body.data.object.customer_email);
 			formData.append("customerId", req.body.data.object.customer);
 			formData.append("role", "PREMIUM");
@@ -72,10 +91,17 @@ app.post("/stripe-webhook", async (req: Request, res: Response) => {
 			req.body.type === "customer.subscription.paused"
 		) {
 			const formData = new FormData();
-			console.log(`🍀 \n | 🍄 app.post \n | 🍄 formData:`, formData);
-			formData.append("email", req.body.data.object.customer_email);
-			formData.append("customerId", req.body.data.object.customer);
+			if (email) {
+				console.log(`🍀 \n | 🍄 app.post \n | 🍄 email:`, email);
+				formData.append("email", email);
+			} else if (!email) {
+				email = await getCustomerEmail(customerId);
+				console.log(`🍀 \n | 🍄 app.post \n | 🍄 email:`, email);
+				formData.append("email", email);
+			}
+
 			formData.append("role", "USER");
+
 			await axios
 				.post(
 					"https://60c6-38-6-227-3.ngrok-free.app/api/updateUserRole",
