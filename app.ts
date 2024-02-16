@@ -10,16 +10,12 @@ dotenv.config();
 app.use(express.json());
 
 app.post("/stripe-webhook", async (req: Request, res: Response) => {
-	const eventType = req.body.type;
-	console.log(`🍀 \n | 🍄 app.post \n | 🍄 eventType:`, eventType);
-	const customer_email = req.body.data.object.customer_email;
-	console.log(`🍀 \n | 🍄 app.post \n | 🍄 customer_email:`, customer_email);
 	try {
-		console.log(`Received event: ${eventType}`);
-		if (eventType === "checkout.session.completed") {
+		console.log(`Received event:`, req.body.type);
+		if (req.body.type === "checkout.session.completed") {
 			const formData = new FormData();
 			console.log(`🍀 \n | 🍄 app.post \n | 🍄 formData:`, formData);
-			formData.append("email", customer_email);
+			formData.append("email", req.body.data.object.customer_email);
 			formData.append("role", "PREMIUM");
 			await axios
 				.post(
@@ -40,12 +36,12 @@ app.post("/stripe-webhook", async (req: Request, res: Response) => {
 					res.status(500).json({ message: "Internal Server Error" });
 				});
 		} else if (
-			eventType === "customer.subscription.created" ||
-			eventType === "customer.subscription.resumed"
+			req.body.type === "customer.subscription.created" ||
+			req.body.type === "customer.subscription.resumed"
 		) {
 			const formData = new FormData();
 			console.log(`🍀 \n | 🍄 app.post \n | 🍄 formData:`, formData);
-			formData.append("email", customer_email);
+			formData.append("email", req.body.data.object.customer_email);
 			formData.append("role", "PREMIUM");
 			await axios
 				.post(
@@ -66,12 +62,12 @@ app.post("/stripe-webhook", async (req: Request, res: Response) => {
 					res.status(500).json({ message: "Internal Server Error" });
 				});
 		} else if (
-			eventType === "customer.subscription.deleted" ||
-			eventType === "customer.subscription.paused"
+			req.body.type === "customer.subscription.deleted" ||
+			req.body.type === "customer.subscription.paused"
 		) {
 			const formData = new FormData();
 			console.log(`🍀 \n | 🍄 app.post \n | 🍄 formData:`, formData);
-			formData.append("email", customer_email);
+			formData.append("email", req.body.data.object.customer_email);
 			formData.append("role", "USER");
 			await axios
 				.post(
@@ -92,7 +88,7 @@ app.post("/stripe-webhook", async (req: Request, res: Response) => {
 					res.status(500).json({ message: "Internal Server Error" });
 				});
 		} else {
-			console.log(`Received unsupported event type: ${eventType}`);
+			console.log(`Received unsupported event type: `, req.body.type);
 			return res.sendStatus(400);
 		}
 	} catch (error) {
