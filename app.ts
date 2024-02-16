@@ -10,6 +10,7 @@ dotenv.config();
 app.use(express.json());
 
 app.post("/stripe-webhook", async (req: Request, res: Response) => {
+	console.log(`🍀 \n | 🍄 app.post \n | 🍄 req:`, req.body);
 	try {
 		console.log(`Received event:`, req.body.type);
 		if (req.body.type === "checkout.session.completed") {
