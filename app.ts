@@ -11,11 +11,14 @@ app.use(express.json());
 
 app.post("/stripe-webhook", async (req: Request, res: Response) => {
 	const eventType = req.body.type;
+	console.log(`🍀 \n | 🍄 app.post \n | 🍄 eventType:`, eventType);
 	const customer_email = req.body.data.object.customer_email;
+	console.log(`🍀 \n | 🍄 app.post \n | 🍄 customer_email:`, customer_email);
 	try {
 		console.log(`Received event: ${eventType}`);
 		if (eventType === "checkout.session.completed") {
 			const formData = new FormData();
+			console.log(`🍀 \n | 🍄 app.post \n | 🍄 formData:`, formData);
 			formData.append("email", customer_email);
 			formData.append("role", "PREMIUM");
 			await axios
@@ -41,6 +44,7 @@ app.post("/stripe-webhook", async (req: Request, res: Response) => {
 			eventType === "customer.subscription.resumed"
 		) {
 			const formData = new FormData();
+			console.log(`🍀 \n | 🍄 app.post \n | 🍄 formData:`, formData);
 			formData.append("email", customer_email);
 			formData.append("role", "PREMIUM");
 			await axios
@@ -66,6 +70,7 @@ app.post("/stripe-webhook", async (req: Request, res: Response) => {
 			eventType === "customer.subscription.paused"
 		) {
 			const formData = new FormData();
+			console.log(`🍀 \n | 🍄 app.post \n | 🍄 formData:`, formData);
 			formData.append("email", customer_email);
 			formData.append("role", "USER");
 			await axios
