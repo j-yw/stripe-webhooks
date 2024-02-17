@@ -73,9 +73,10 @@ app.post("/stripe-webhook", async (req: Request, res: Response) => {
 			formData.append("email", req.body.data.object.customer_email);
 			formData.append("customerId", req.body.data.object.customer);
 			formData.append("role", "PREMIUM");
+			// Change to PRODUCTION_BASE_URL when deploying to production
 			await axios
 				.post(
-					"https://60c6-38-6-227-3.ngrok-free.app/api/updateUserRole",
+					`${process.env.DEVELOP_BASE_URL}/api/updateUserRole`,
 					formData,
 					{
 						headers: {
@@ -107,9 +108,10 @@ app.post("/stripe-webhook", async (req: Request, res: Response) => {
 
 			formData.append("role", "USER");
 
+			// Change to PRODUCTION_BASE_URL when deploying to production
 			await axios
 				.post(
-					"https://60c6-38-6-227-3.ngrok-free.app/api/updateUserRole",
+					`${process.env.DEVELOP_BASE_URL}/api/updateUserRole`,
 					formData,
 					{
 						headers: {
