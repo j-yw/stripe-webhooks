@@ -70,8 +70,15 @@ app.post("/stripe-webhook", async (req: Request, res: Response) => {
 			req.body.type === "customer.subscription.resumed"
 		) {
 			const formData = new FormData();
-			formData.append("email", req.body.data.object.customer_email);
-			formData.append("customerId", req.body.data.object.customer);
+			if (email) {
+				console.log(`🍀 \n | 🍄 app.post \n | 🍄 email:`, email);
+				formData.append("email", email);
+			} else if (!email) {
+				email = await getCustomerEmail(customerId);
+				console.log(`🍀 \n | 🍄 app.post \n | 🍄 email:`, email);
+				formData.append("email", email);
+			}
+
 			formData.append("role", "PREMIUM");
 			// Change to PRODUCTION_BASE_URL when deploying to production
 			await axios
