@@ -49,7 +49,7 @@ app.post("/stripe-webhook", async (req: Request, res: Response) => {
 			formData.append("role", "PREMIUM");
 			await axios
 				.post(
-					"https://60c6-38-6-227-3.ngrok-free.app/api/updateUserRole",
+					`${process.env.LOCAL_DEVELOP_BASE_URL}/api/updateUserRole`,
 					formData,
 					{
 						headers: {
