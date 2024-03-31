@@ -83,7 +83,7 @@ app.post("/stripe-webhook", async (req: Request, res: Response) => {
 			// Change to PRODUCTION_BASE_URL when deploying to production
 			await axios
 				.post(
-					`${process.env.DEVELOP_BASE_URL}/api/updateUserRole`,
+					`${process.env.LOCAL_DEVELOP_BASE_URL}/api/updateUserRole`,
 					formData,
 					{
 						headers: {
@@ -118,7 +118,7 @@ app.post("/stripe-webhook", async (req: Request, res: Response) => {
 			// Change to PRODUCTION_BASE_URL when deploying to production
 			await axios
 				.post(
-					`${process.env.DEVELOP_BASE_URL}/api/updateUserRole`,
+					`${process.env.LOCAL_DEVELOP_BASE_URL}/api/updateUserRole`,
 					formData,
 					{
 						headers: {
